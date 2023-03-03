@@ -47,7 +47,7 @@ vars = {
   # chromium waterfalls. More info at: crbug.com/570091.
   'checkout_configuration': 'default',
   'checkout_instrumented_libraries': 'checkout_linux and checkout_configuration == "default"',
-  'deps_owt_git': 'https://github.com/open-webrtc-toolkit',
+  'deps_owt_git': 'https://github.com/zhouxl3',
   'chromium_revision': 'f8d62f3cb78e2561e03012256719cfc98a35ab55',
 
   # Keep the Chromium default of generating location tags.

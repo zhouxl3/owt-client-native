@@ -113,7 +113,7 @@ def _copylibs(arch, scheme):
     if os.path.exists(os.path.join(OUT_PATH, out_lib)):
         os.remove(os.path.join(OUT_PATH, out_lib))
     owt_path = os.path.join(OUT_PATH, r'%s-%s\obj\talk\owt\owt.lib' % (scheme, arch))
-    shutil.copy(owt_path, os.path.join('out',out_lib))
+    shutil.copy(owt_path, os.path.join(OUT_PATH,out_lib))
 
 
 # Run unit tests on simulator. Return True if all tests are passed.
@@ -162,6 +162,34 @@ def pack_sdk(scheme, output_path):
             shutil.rmtree(dst_doc_path)
         shutil.copytree(src_doc_path, dst_doc_path)
 
+def pack_deps(scheme, output_deps,ssl_root,msdk_root,sio_root):
+    print('start copy deps files to %s !' % output_deps)
+    print('ssl_root %s msdk_root %s sio_root %s !' % (ssl_root,msdk_root,sio_root))
+    out_deps_ssl_folder_name=os.path.basename(ssl_root)
+    if ssl_root and os.path.exists(ssl_root):
+        ssl_folder_name=os.path.basename(ssl_root)
+        out_deps_ssl = os.path.join(output_deps, ssl_folder_name)
+        print('copy ssl folder from %s to %s !' % (ssl_root,out_deps_ssl))
+        if os.path.exists(out_deps_ssl):
+            shutil.rmtree(out_deps_ssl)
+        shutil.copytree(ssl_root, out_deps_ssl)
+    print('Done')
+    if msdk_root and os.path.exists(msdk_root):
+        msdk_folder_name=os.path.basename(msdk_root)
+        out_deps_msdk = os.path.join(output_deps,"Intel(R) Media SDK 2021 R1",msdk_folder_name)
+        print('copy msdk folder from %s to %s !' % (msdk_root,out_deps_msdk))
+        if os.path.exists(out_deps_msdk):
+            shutil.rmtree(out_deps_msdk)
+        shutil.copytree(msdk_root, out_deps_msdk)
+    print('Done')
+    if sio_root and os.path.exists(sio_root):
+        sio_folder_name=os.path.basename(sio_root)
+        out_deps_sio = os.path.join(output_deps, sio_folder_name)
+        print('copy sio folder from %s to %s !' % (sio_root,out_deps_sio))
+        if os.path.exists(out_deps_sio):
+            shutil.rmtree(out_deps_sio)
+        shutil.copytree(sio_root, out_deps_sio)
+    print('Done')
 
 def main():
     parser = argparse.ArgumentParser()
@@ -183,6 +211,7 @@ def main():
                         help='To build sdk lib.')
     parser.add_argument('--docs', default=False, action='store_true',
                         help='To generate the API document.')
+    parser.add_argument('--output_deps', help='Path to copy deps.')
     parser.add_argument('--output_path', help='Path to copy sdk.')
     parser.add_argument('--cloud_gaming', default=False,
                         help='Build for cloud gaming. This option is not intended to be used in general purpose. Setting to true may result unexpected behaviors. Default to false.', action='store_true')
@@ -218,6 +247,9 @@ def main():
             return 1
     if opts.output_path:
         pack_sdk(opts.scheme, opts.output_path)
+    print('Done')
+    if opts.output_path:
+        pack_deps(opts.scheme,opts.output_deps,opts.ssl_root,opts.msdk_root,opts.sio_root)
     print('Done')
     return 0
 
